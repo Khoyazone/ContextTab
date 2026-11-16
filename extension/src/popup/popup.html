@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ContextTab</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <header class="header">
+      <img class="logo" src="../../icons/icon32.png" alt="" width="24" height="24" />
+      <h1>ContextTab</h1>
+      <div class="segmented" role="radiogroup" aria-label="Grouping mode">
+        <button type="button" role="radio" data-mode="auto" aria-checked="false">Auto</button>
+        <button type="button" role="radio" data-mode="manual" aria-checked="false">Manuel</button>
+      </div>
+    </header>
+
+    <section class="stats" aria-label="Tabs in this window">
+      <div class="stat">
+        <span class="stat-value" id="count-total">–</span>
+        <span class="stat-label">tabs</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="count-ungrouped">–</span>
+        <span class="stat-label">ungrouped</span>
+      </div>
+      <div class="stat">
+        <span class="stat-value" id="count-threshold">–</span>
+        <span class="stat-label" id="threshold-label">threshold</span>
+        <div class="meter" aria-hidden="true"><div class="meter-fill" id="threshold-meter"></div></div>
+      </div>
+    </section>
+
+    <div class="status" id="status" data-state="idle" role="status" aria-live="polite">
+      <span class="status-dot" aria-hidden="true"></span>
+      <div class="status-text">
+        <p id="status-message">Waiting</p>
+        <p class="status-detail" id="status-detail" hidden></p>
+        <p class="status-warning" id="status-warning" hidden></p>
+      </div>
+    </div>
+
+    <div class="signin" id="signin" hidden>
+      <p>Sign in to group your tabs with AI. Without sign-in: grouping by keywords.</p>
+      <button type="button" class="btn btn-primary" id="sign-in">Sign in with Google</button>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn btn-primary" id="group-now">
+        Group now <kbd id="shortcut">Alt+G</kbd>
+      </button>
+      <div class="actions-row">
+        <button type="button" class="btn" id="undo">Undo last</button>
+        <button type="button" class="btn" id="ungroup-all">Ungroup all</button>
+      </div>
+    </div>
+
+    <section class="groups">
+      <h2>Window groups</h2>
+      <ul id="group-list" class="group-list"></ul>
+      <p class="empty" id="groups-empty" hidden>No groups yet.</p>
+    </section>
+
+    <footer class="footer">
+      <span id="engine" class="engine"></span>
+      <button type="button" class="link" id="open-options">Settings</button>
+    </footer>
+
+    <template id="group-item">
+      <li class="group-item">
+        <span class="group-dot" aria-hidden="true"></span>
+        <button type="button" class="group-name" title="Click to rename"></button>
+        <span class="group-count"></span>
+      </li>
+    </template>
+
+    <script type="module" src="popup.js"></script>
+  </body>
+</html>

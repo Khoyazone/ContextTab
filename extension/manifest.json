@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+  "name": "ContextTab",
+  "version": "0.1.0",
+  "description": "Automatically groups your tabs by context with Gemini.",
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAo01U6zJ9u70MDqEcrXrZVELjWI+j/6brXwXbqq/vASgnqNr8IwxKE00mjCKn8u/h9WOccE+0Dv7iUF1O9oCVtVPbjn/oxmeyadlTs2Eq1YqCLwF2GWO96J2pT5h82raIs5se/UENDFmyeglpSoG5yaSaZT4ljeYBd2POava/kTB4X2EA8PE0bOJqE7MDYd/HDG9+yRWYtEHqNKRP7r9rcWqt9xsVL0ZVaCZddBR1WKPBZgqBSC9BgbBSf+wBTOkD0uh9lVhZKhODsMURf9FPwEperDbFHQ/4QHNv5twDFANzfO5TanAyjR1AHZSsyUCWIHpTkRMuBrtgLrJekIDJtQIDAQAB",
+  "minimum_chrome_version": "120",
+  "incognito": "not_allowed",
+  "permissions": ["tabs", "tabGroups", "storage", "alarms", "notifications", "identity"],
+  "oauth2": {
+    "client_id": "11839059749-7efkjlsmvs7qlue6j38h4mnhb50ieau6.apps.googleusercontent.com",
+    "scopes": ["openid"]
+  },
+  "host_permissions": [
+    "http://localhost/*",
+    "http://127.0.0.1/*",
+    "https://*.run.app/*",
+    "https://generativelanguage.googleapis.com/*"
+  ],
+  "background": {
+    "service_worker": "src/background/index.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "ContextTab",
+    "default_popup": "src/popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "32": "icons/icon32.png"
+    }
+  },
+  "options_ui": {
+    "page": "src/options/options.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "32": "icons/icon32.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "commands": {
+    "group-now": {
+      "suggested_key": { "default": "Alt+G" },
+      "description": "Group tabs now"
+    }
+  }
+}

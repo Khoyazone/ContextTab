@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Options · ContextTab</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="page-header">
+        <img src="../../icons/icon48.png" alt="" width="40" height="40" />
+        <div>
+          <h1>ContextTab</h1>
+          <p class="muted">Automatically groups your tabs by context with Gemini.</p>
+        </div>
+      </header>
+
+      <form id="settings-form" novalidate>
+        <section class="card">
+          <h2>Classification engine</h2>
+          <div class="choices" role="radiogroup" aria-label="Engine">
+            <label class="choice">
+              <input type="radio" name="provider" value="backend" />
+              <span>
+                <strong>Gemini through online service</strong> <span class="tag">recommended</span>
+                <small>Sign in with your Google account; no key required. Daily limit on AI groupings.</small>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="provider" value="gemini" />
+              <span>
+                <strong>Direct Gemini API</strong> <span class="tag tag-warn">prototype</span>
+                <small>Direct call using an AI Studio key stored in this browser.</small>
+              </span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="provider" value="heuristic" />
+              <span>
+                <strong>Local heuristic</strong>
+                <small>Keywords and domains, offline, without AI. Also used as a fallback.</small>
+              </span>
+            </label>
+          </div>
+
+          <div class="fields" data-provider="backend">
+            <div class="account" id="account" data-state="loading">
+              <div class="account-text">
+                <strong id="account-title">Google account</strong>
+                <p id="account-status" class="account-status" role="status" aria-live="polite">Checking…</p>
+              </div>
+              <div class="account-actions">
+                <button type="button" class="btn btn-primary" id="sign-in" hidden>Sign in with Google</button>
+                <button type="button" class="btn" id="sign-out" hidden>Sign out</button>
+              </div>
+            </div>
+
+            <details class="advanced">
+              <summary>Advanced settings (backend URL, owner token)</summary>
+              <label class="field">
+                <span>Backend URL</span>
+                <input type="url" name="backendUrl" placeholder="https://tab-classifier-xxxx.europe-west1.run.app" spellcheck="false" />
+                <small>HTTPS required (HTTP accepted only for localhost).</small>
+              </label>
+              <label class="field">
+                <span>Owner token (optional)</span>
+                <input type="password" name="backendToken" autocomplete="off" spellcheck="false" placeholder="Valeur du secret EXTENSION_TOKEN" />
+                <small>For the backend owner: replaces Google sign-in and has no daily limit.</small>
+              </label>
+              <p class="hint">
+                Extension origin (<code>ALLOWED_ORIGINS</code> on the backend):
+                <code id="extension-origin"></code>
+                <button type="button" class="link" id="copy-origin">Copy</button>
+              </p>
+            </details>
+          </div>
+
+          <div class="fields" data-provider="gemini">
+            <label class="field">
+              <span>Gemini API key (AI Studio)</span>
+              <input type="password" name="geminiApiKey" autocomplete="off" spellcheck="false" />
+              <small class="warn">Prototype mode: the key remains readable in this Chrome profile. Use the backend for the final demo.</small>
+            </label>
+          </div>
+
+          <div class="fields" data-provider="gemini">
+            <label class="field">
+              <span>Model</span>
+              <input type="text" name="geminiModel" list="models" spellcheck="false" />
+              <datalist id="models">
+                <option value="gemini-3.8-flash"></option>
+                <option value="gemini-3.5-flash"></option>
+                <option value="gemini-3.5-flash-lite"></option>
+                <option value="gemini-3.1-flash-lite"></option>
+              </datalist>
+            </label>
+          </div>
+
+          <div class="test-row">
+            <button type="button" class="btn" id="test-provider">Test connection</button>
+            <p id="test-result" class="test-result" role="status" aria-live="polite"></p>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Trigger</h2>
+          <div class="choices inline" role="radiogroup" aria-label="Mode">
+            <label class="choice">
+              <input type="radio" name="mode" value="auto" />
+              <span><strong>Automatic</strong><small>As soon as the threshold is reached.</small></span>
+            </label>
+            <label class="choice">
+              <input type="radio" name="mode" value="manual" />
+              <span><strong>Manual</strong><small>Popup button or shortcut only.</small></span>
+            </label>
+          </div>
+          <div class="grid">
+            <label class="field">
+              <span>Ungrouped tab threshold: <output id="threshold-value"></output></span>
+              <input type="range" name="threshold" min="5" max="50" step="1" />
+              <small>First automatic grouping in a window (5 to 50).</small>
+            </label>
+            <label class="field">
+              <span>Incremental threshold</span>
+              <input type="number" name="incrementalThreshold" min="1" max="20" />
+              <small>New ungrouped tabs when the window already has groups.</small>
+            </label>
+            <label class="field">
+              <span>Minimum delay between groupings (s)</span>
+              <input type="number" name="minDelaySeconds" min="10" max="600" />
+            </label>
+            <div class="field">
+              <span>Raccourci clavier</span>
+              <p class="shortcut"><kbd id="shortcut">not set</kbd> <button type="button" class="link" id="edit-shortcut">Edit</button></p>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Groups</h2>
+          <div class="grid">
+            <label class="field">
+              <span>Maximum number of new groups</span>
+              <input type="number" name="maxGroups" min="1" max="10" />
+            </label>
+            <label class="field">
+              <span>Group name language</span>
+              <select name="language" id="language"></select>
+            </label>
+          </div>
+          <label class="check"><input type="checkbox" name="includeGroupedTabs" /> Also reorganize already grouped tabs (“group everything”)</label>
+          <label class="check"><input type="checkbox" name="collapseInactive" /> Collapse inactive groups after grouping</label>
+          <label class="check"><input type="checkbox" name="notify" /> Notify me after grouping (with an “Undo” button)</label>
+        </section>
+
+        <section class="card">
+          <h2>Privacy</h2>
+          <label class="field">
+            <span>Excluded domains (one per line)</span>
+            <textarea name="excludedDomains" rows="4" spellcheck="false" placeholder="mabanque.fr&#10;mail.google.com"></textarea>
+            <small>A domain also excludes its subdomains. These tabs are never sent or grouped.</small>
+          </label>
+          <div class="privacy">
+            <p><strong>Data sent for each tab:</strong> title (150 characters max.), domain, URL path without parameters (long identifiers masked), and any search query. Never page content.</p>
+            <p>Never sent: pinned tabs, incognito browsing, <code>chrome://</code> / <code>about:</code> pages, or excluded domains.</p>
+            <p>Google account: only the <code>openid</code> permission is requested (no name or e-mail). The server keeps a pseudonymous identifier and daily counter, deleted after 2 to 3 days.</p>
+            <p><a id="privacy-link" href="#" target="_blank" rel="noopener">Full privacy policy</a></p>
+          </div>
+          <label class="check"><input type="checkbox" name="cacheEnabled" /> Local classification cache (24 h) to avoid repeated calls</label>
+          <button type="button" class="btn btn-small" id="clear-cache">Clear cache</button>
+        </section>
+
+        <div class="savebar">
+          <p id="save-status" class="save-status" role="status" aria-live="polite"></p>
+          <button type="button" class="btn" id="reset">Default values</button>
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </form>
+    </main>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+node_modules/
+.env
+.env.*
+!.env.example
+*.log
+tools/e2e-output/
+tools/.chrome-profile/
+
+# Chrome Web Store packages (npm run package)
+dist/
+
+.DS_Store
+coverage/
+*.tsbuildinfo
